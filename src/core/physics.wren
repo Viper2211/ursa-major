@@ -1,45 +1,37 @@
 import "math" for Vector
 
 class PhysicsBody {
-    construct new(tags, width, height, callback) {
-        _callback = callback
+    construct new(tags, width, height) {
         _pos = Vector.new(0,0)
         _size = Vector.new(width, height)
         _movement = Vector.new(0,0)
-        _speed = 1
         _tags = tags
     }
 
     update(gameObjects) {
-        var movement = _movement
+        var moved = 0
+        var attempts = _movement.x.abs.max(_movement.y.abs)
 
-        _pos = _pos + movement * _speed
+        while (moved < attempts) {
+     
+            if (_movement.x.abs > 0) {
+                _pos = _pos + Vector.new(_movement.x.sign, 0)
 
-        if (collided(gameObjects)) {
-            _pos = _pos - movement * _speed
-        } else {
-            _callback.call(entity)
-            return
+                if (collided(gameObjects)) {
+                    _pos = _pos - Vector.new(_movement.x.sign, 0)
+                }
+            }
+
+            if (_movement.y.abs > 0) {
+                _pos = _pos + Vector.new(0, _movement.y.sign)
+
+                if (collided(gameObjects)) {
+                    _pos = _pos - Vector.new(0, _movement.y.sign)
+                }
+            }
+
+            moved = moved + 1
         }
-
-        _pos = _pos + Vector.new(0, movement.y) * _speed
-
-        if (collided(gameObjects)) {
-            _pos = _pos - Vector.new(0, movement.y) * _speed
-        } else {
-            _callback.call(entity)
-            return
-        }
-
-        _pos = _pos + Vector.new(movement.x, 0) * _speed
-
-        if (collided(gameObjects)) {
-            _pos = _pos - Vector.new(movement.x, 0) * _speed
-        } else {
-            _callback.call(entity)
-            return
-        }
-
     }
 
     collided(gameObjects) {
@@ -85,9 +77,8 @@ class PhysicsBody {
         return this.entity
     }
     clone() {
-        var temp = PhysicsBody.new(_tags,_size.x,_size.y,_callback)
+        var temp = PhysicsBody.new(_tags,_size.x,_size.y)
         temp.pos(_pos.x, _pos.y)
-        temp.speed = _speed
         return temp
     }
 
@@ -97,8 +88,6 @@ class PhysicsBody {
         return _pos
     }
     size { _size }
-    speed { _speed }
-    speed=(value) { _speed = value }
     movement { _movement }
     tags { _tags }
 

@@ -10,25 +10,23 @@ class Generator {
     construct new(procGenStyle) {
         
         __playerData = {
-            "physics" : PhysicsBody.new(["player","collider"], 24, 30) { |entity|
-                
-            },
+            "physics" : PhysicsBody.new(["player","collider"], 24, 30),
             "wasd input" : InputController.new() { |entity, keyboard, mouse|
                 entity.physics.stop()
                 
                 if (keyboard["W"].down) {
-                    entity.physics.setForce(entity.physics.movement.x,-1)
+                    entity.physics.setForce(entity.physics.movement.x, -3)
                     entity.graphics.setSprite(1)
                 } else if (keyboard["S"].down) {
-                    entity.physics.setForce(entity.physics.movement.x,1)
+                    entity.physics.setForce(entity.physics.movement.x, 3)
                     entity.graphics.setSprite(0)
                 }
 
                 if (keyboard["A"].down) {
-                    entity.physics.setForce(-1,entity.physics.movement.y)
+                    entity.physics.setForce(-3, entity.physics.movement.y)
                     entity.graphics.setSprite(2)
                 } else if (keyboard["D"].down) {
-                    entity.physics.setForce(1,entity.physics.movement.y)
+                    entity.physics.setForce(3, entity.physics.movement.y)
                     entity.graphics.setSprite(3)
                 }
             },
@@ -41,8 +39,8 @@ class Generator {
         }
 
         __tile = {
-            "collider" : PhysicsBody.new(["static","collider"], 32, 32) {|entity|},
-            "floor" : PhysicsBody.new(["static"], 32, 32) {|entity|},
+            "collider" : PhysicsBody.new(["static","collider"], 32, 32),
+            "floor" : PhysicsBody.new(["static"], 32, 32),
             "static" : null,
             "empty" : Sprite.new(Sprite.resize(ImageData.loadFromFile("res/EmptyTile.png"),1/2)),
             "wall" :  Sprite.new(Sprite.resize(ImageData.loadFromFile("res/StoneTile.png"),1/2)),
@@ -52,7 +50,6 @@ class Generator {
         if (!__player) {
             __player = GameObject.new(__playerData["spritesheet"],__playerData["physics"],__playerData["wasd input"])
             __player.graphics.setSprite(0)
-            __player.physics.speed = 1.4
 
 
             __numToTile = {
